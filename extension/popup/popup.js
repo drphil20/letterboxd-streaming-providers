@@ -51,7 +51,7 @@ function appendOptionsToCountryList() {
 
 appendOptionsToCountryList();
 
-var provider_list = document.getElementById('ProviderList');
+var provider_lists = document.getElementById('ProviderLists');
 
 /**
  * Appends all providers from the selected country as option to the provider_list select tag.
@@ -59,6 +59,7 @@ var provider_list = document.getElementById('ProviderList');
  * param {string} [defaultProviderName] - The (optional) name of the provider which is selected by default.
  */
 function appendOptionsToProviderList(defaultProviderName) {
+  var provider_list = provider_lists.getElementsByClassName("ProviderList")[0];
   provider_list.options.length = 0;
   var fragment = document.createDocumentFragment();
   var keys = Object.keys(providers).sort(function (a, b) {
@@ -95,6 +96,18 @@ filterSwitch.checked = background.getFilterStatus();
 filterSwitch.addEventListener("change", changeFilterSwitch);
 
 /**
+ * Adds a new provider selection drop down menu
+ */
+function addProviderSelection() {
+  alert("s");
+  var selections = document.getElementById("ProviderLists");
+  var newMenu = document.getElementsByClassName("ProviderLists")[0].clone(true);
+  selections.appendChild(newMenu);
+  newMenu.addEventListener("change", updateProviderIds);
+}
+document.getElementById("addProvider").addEventListener("click", function(){addProviderSelection();});
+
+/**
  * Changes the filter status in the background page.
  */
 function changeFilterSwitch() {
@@ -104,17 +117,21 @@ function changeFilterSwitch() {
   country_list.disabled = (!filterSwitch.checked);
 }
 
-provider_list.addEventListener("change", changeProviderId);
+provider_list.addEventListener("change", updateProviderIds);
 
 /**
  * Called when the selected item in provider_list is changed. Changes the provider_id in the background page.
  */
-function changeProviderId() {
-  let id = provider_list.options[provider_list.selectedIndex].value;
-  if(typeof providers !== 'undefined' && providers.hasOwnProperty(id) && providers[id].hasOwnProperty('provider_id')) {
+function updateProviderIds() {
+  var providerIDs = [];
+  var lists = document.getElementsByClassName("ProviderList");
+  for ( let provider_list in lists ) {
+    let id = lists[provider_list].options[provider_list.selectedIndex].value;
+    if(typeof providers !== 'undefined' && providers.hasOwnProperty(id) && providers[id].hasOwnProperty('provider_id')) {
     provider_id = providers[id].provider_id;
-    background.setProviderId(provider_id);
+    providerIDs.push(provider_id);
   }
+  background.setProviderIDs(providerIDs);
 }
 
 country_list.addEventListener("change", changeCountryCode);

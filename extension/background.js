@@ -18,7 +18,7 @@
 // for compatibility reasons
 var browser = chrome;
 
-var provider_id; // e.g. Netflix: 8, Amazon Prime Video: 9
+var provider_ids; // e.g. Netflix: 8, Amazon Prime Video: 9
 
 var providers;
 
@@ -131,10 +131,10 @@ const loadJSON = (path, callback) => {
  * @param {string} country_code - The currently set country code to store.
  * @param {int} provider_id - The currently set provider id to store.
  */
-function storeSettings(country_code, provider_id, filterStatus) {
+function storeSettings(country_code, provider_ids, filterStatus) {
   browser.storage.local.set({
     country_code: country_code,
-    provider_id: provider_id,
+    provider_id: provider_ids,
     filterStatus: filterStatus
   });
 }
@@ -408,9 +408,9 @@ function getCountryCode() {
  *
  * @param {int} id - The new provider_id.
  */
-function setProviderId(id) {
-  provider_id = Number(id);
-  storeSettings(country_code, provider_id, filterStatus);
+function addProviderId(id) {
+  provider_ids.push(Number(id));
+  storeSettings(country_code, provider_ids, filterStatus);
   //reloadMovieFilter();
 }
 
@@ -448,7 +448,7 @@ function getFilterStatus() {
  */
 function setFilterStatus(status) {
   filterStatus = status;
-  storeSettings(country_code, provider_id, filterStatus);
+  storeSettings(country_code, provider_ids, filterStatus);
 }
 
 /**
@@ -458,7 +458,7 @@ function setFilterStatus(status) {
  */
 function setCountryCode(code) {
   country_code = code;
-  storeSettings(country_code, provider_id, filterStatus);
+  storeSettings(country_code, provider_ids, filterStatus);
   //reloadMovieFilter();
 }
 
